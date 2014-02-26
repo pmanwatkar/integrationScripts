@@ -1,0 +1,13 @@
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1	localhost.localdomain localhost
+::1	localhost6.localdomain6 localhost6
+
+10.252.33.71    puppetca.hcl.com        puppetca
+10.252.33.71    puppetlb.hcl.com        puppetlb
+10.252.152.126	zenoss.hcl.com		zenoss
+10.249.30.130    puppetm2.hcl.com        puppetm2
+10.252.43.206    dbserver.hcl.com        dbserver
+10.252.58.186    nfsrepo.hcl.com  	nfsrepo
+10.252.14.156    portal1.hcl.com        portal1
+10.249.42.157    puppetm1.hcl.com        puppetm1
