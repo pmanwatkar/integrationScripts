@@ -1,0 +1,44 @@
+#!/bin/sh
+
+rootpassword=$args[0]
+mysqlport=$args[1]
+apacheport=$args[2]
+sslport=$args[3]
+apacheuser=$args[4]
+apachegroup=$args[5]
+documentroot=$args[6]
+host=$args[7]
+arrStr=$args[8]
+
+cd /etc/puppetlabs/puppet/manifests/
+echo `pwd`
+
+test=`grep -e "import '${hostname}.pp'" site.pp`
+
+if($test); then
+ echo "import '${hostname}.pp'" >> site.pp 
+fi
+
+echo -e "\$extlookup_datadir = '/etc/puppetlabs/puppet/tmp/'" > ${hostname}.pp
+echo -e "\$extlookup_precedence = ['"$hostname"','common']" >> ${hostname}.pp
+
+echo -e "mysql_root_password,${rootpassword}\nmysql_port,${mysqlport}\napache_port,${apacheport}\napache_sslport,${sslport}\napache_user,${apacheuser}\napache_group,${apachegroup}\napache_documentroot,${documentroot}" >> /etc/puppetlabs/puppet/tmp/${hostname}.csv
+
+str="node '${hostname}' {"
+moduleInstall=echo $arrStr | tr ',' ' '
+
+for i in $moduleInstall
+do
+str=$str "\n include " $i
+done
+str=$str " \n }"
+echo $str >> ${hostname}.pp
+
+ssh root@$ipaddress puppet agent -t
+
+sleep 30
+
+rm -rf ${hostname}.pp
+rm -rf /etc/puppetlabs/puppet/tmp/${hostname}.csv
+
+sed -i "/import '${hostname}.pp'"/d site.pp
